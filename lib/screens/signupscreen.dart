@@ -90,8 +90,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
             // Sign Up Button
             ElevatedButton(
               onPressed: () {
-                // Handle sign-up logic here
+                if(!_formKey.currentState!.validate() || imageFileOfUser == null)
+                Get.snackbar ("Field Missing", "Please choose image and fill out complete sign up form.");
+                return;
+                }
+
+                if(_emailTextEditingController.text.isEmpty && _passwordTextEditingController.text.isEmpty)
+                {
+                Get.snackbar ("Field Missing", "Please fill out complete sign up form.");
+                return;
+                }
+
+                UserViewModel.signUp(
+                  _emailTextEditingController.text.trim(),
+                  _passwordTextEditingController.text.trim(),
+                  _firstNameTextEditingController.text.trim(),
+                  _lastNameTextEditingController.text.trim(),
+                  _cityTextEditingController.text.trim(),
+                  _countryTextEditingController.text.trim(),
+                  _bioTextEditingController.text.trim(),
+                  imageFileOfUser,
+
+                ):
               },
+
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red, // Red button to match login page style
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
