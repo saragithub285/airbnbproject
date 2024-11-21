@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "324388757156",
+    "project_id": "airbnb-mobilecomputing",
+    "storage_bucket": "airbnb-mobilecomputing.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324388757156:android:f88cedcdd76886c6221031",
+        "android_client_info": {
+          "package_name": "com.example.airbnbmc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG4JwHQUMWWaV7Nj6w0iTSqrf02BHylJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
