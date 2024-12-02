@@ -1,6 +1,8 @@
 import 'package:airbnbmc/screens/guesthomescreen.dart';
+import 'package:airbnbmc/screens/hotel_detail.dart';
 import 'package:airbnbmc/screens/loginscreen.dart';
 import 'package:airbnbmc/screens/signupscreen.dart';
+import 'package:airbnbmc/screens/startscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const AppInit(), // Initialize app with AppInit widget
+        home: GuestHomeScreen(), // Initialize app with AppInit widget
       ),
     );
   }

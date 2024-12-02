@@ -44,6 +44,7 @@ dependencies:
   smooth_page_indicator:
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
