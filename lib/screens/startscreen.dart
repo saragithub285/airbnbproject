@@ -1,7 +1,8 @@
-import 'dart:async';  // Add this import for Timer
-import 'package:airbnbmc/screens/loginscreen.dart';
+import 'dart:async'; // Add this import for Timer
+
+import 'package:airbnbmc/widgets/calender_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';  // Assuming you want to navigate using GetX
+import 'package:get/get.dart'; // Assuming you want to navigate using GetX
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -16,7 +17,8 @@ class _StartScreenState extends State<StartScreen> {
     super.initState();
     // Timer to navigate after 3 seconds
     Timer(const Duration(seconds: 2), () {
-      Get.to(LoginScreen()); // Replace with the actual screen you want to navigate to
+      Get.to(
+          CalenderUi()); // Replace with the actual screen you want to navigate to
     });
   }
 
@@ -24,7 +26,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,  // Keep white background
+        color: Colors.white, // Keep white background
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -34,13 +36,14 @@ class _StartScreenState extends State<StartScreen> {
               Text(
                 'Welcome to',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,   // Bold text
-                  fontSize: 58,                  // Larger text for prominence
-                  color: Colors.black,             // Red text color
-                  letterSpacing: 2.0,            // Space between letters for a clean look
+                  fontWeight: FontWeight.bold, // Bold text
+                  fontSize: 58, // Larger text for prominence
+                  color: Colors.black, // Red text color
+                  letterSpacing: 2.0, // Space between letters for a clean look
                 ),
               ),
-              SizedBox(height: 20), // Adds spacing between the text and the logo
+              SizedBox(
+                  height: 20), // Adds spacing between the text and the logo
               // Logo image
               Image.asset(
                 'images/airbnblogo1.png',

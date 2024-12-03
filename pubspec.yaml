@@ -42,6 +42,10 @@ dependencies:
   cloud_firestore:
   provider: ^6.0.0
   smooth_page_indicator:
+  dio: ^5.7.0
+  flutter_inappwebview: ^6.1.5
+  paymob_payment : ^0.0.1
+  http: ^1.2.2 
 
 
 dev_dependencies:
