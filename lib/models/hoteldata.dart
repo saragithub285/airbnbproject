@@ -6,6 +6,7 @@ class Hotel {
   final String location;
   final String name;
   final double price;
+  final double rating;  // Rating field
 
   // Constructor
   Hotel({
@@ -14,6 +15,7 @@ class Hotel {
     required this.location,
     required this.name,
     required this.price,
+    required this.rating,  // Rating is still here
   });
 
   // Factory constructor to create a Hotel object from a Map (e.g., from Firestore document)
@@ -24,6 +26,7 @@ class Hotel {
       location: map['location'] ?? '',
       name: map['name'] ?? '',
       price: map['price']?.toDouble() ?? 0.0, // Ensure it's a double
+      rating: map['rating']?.toDouble() ?? 0.0, // Default to 0.0 if missing
     );
   }
 
@@ -35,6 +38,7 @@ class Hotel {
       'location': location,
       'name': name,
       'price': price,
+      'rating': rating,  // Add rating to Map
     };
   }
 
@@ -49,6 +53,7 @@ class Hotel {
       location: data['location'] ?? '',
       name: data['name'] ?? '',
       price: data['price']?.toDouble() ?? 0.0,
+      rating: data['rating']?.toDouble() ?? 0.0,  // Handle rating field
     );
   }
 }

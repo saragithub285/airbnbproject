@@ -12,12 +12,10 @@ class HotelDetailPage extends StatefulWidget {
 }
 
 class _HotelDetailPageState extends State<HotelDetailPage> {
-  // Page controller for image slider
   final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
-    // Extract hotel data from the widget
     final hotel = widget.hotel;
 
     return Scaffold(
@@ -100,11 +98,40 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                hotel.location,
+                hotel.location, // Just display location without URL
                 style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
+                  fontSize: 18,
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              // Rating
+              Text(
+                'Rating',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  // Display rating as stars
+                  for (int i = 0; i < 5; i++)
+                    Icon(
+                      i < hotel.rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                    ),
+                  SizedBox(width: 8),
+                  // Display rating as a numeric value
+                  Text(
+                    '${hotel.rating.toStringAsFixed(1)} / 5.0',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
 
