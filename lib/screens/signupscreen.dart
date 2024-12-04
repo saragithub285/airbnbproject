@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart'; // Import provider package
 import 'package:airbnbmc/provider/userprovider.dart'; // Import UserProvider
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider package
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -29,37 +30,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
         String password = _passwordController.text.trim();
 
         // Check if email is already in use
-        await _auth.fetchSignInMethodsForEmail(email).then((methods) {
+        await _auth.fetchSignInMethodsForEmail(email).then((methods) async {
           if (methods.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Email is already registered!')),
             );
           } else {
             // Create user if email is not in use
-            _auth
-                .createUserWithEmailAndPassword(
-                    email: email, password: password)
-                .then((userCredential) {
-              // After successful sign-up, update user provider
-              Provider.of<UserProvider>(context, listen: false).user =
-                  userCredential.user;
+            UserCredential userCredential =
+                await _auth.createUserWithEmailAndPassword(
+              email: email,
+              password: password,
+            );
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sign-up successful!')),
-              );
-              Navigator.pop(context); // Return to the previous screen
-            }).catchError((error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('Failed to sign up: ${error.toString()}')),
-              );
+            // Extract user details
+            String userId = userCredential.user!.uid;
+            String firstName = _firstNameController.text.trim();
+            String lastName = _lastNameController.text.trim();
+            String city = _cityController.text.trim();
+            String country = _countryController.text.trim();
+
+            // Save user data to Firestore
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(userId)
+                .set({
+              'firstName': firstName,
+              'lastName': lastName,
+              'city': city,
+              'country': country,
+              'email': email,
+              'createdAt': DateTime.now(),
             });
+
+            // Update user provider
+            Provider.of<UserProvider>(context, listen: false).user =
+                userCredential.user;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sign-up successful!')),
+            );
+
+            Navigator.pop(context); // Return to the previous screen
           }
         });
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'An error occurred')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('An unexpected error occurred: ${e.toString()}')),
       );
     }
   }

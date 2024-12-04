@@ -1,11 +1,11 @@
 import 'package:airbnbmc/provider/tripprovider.dart'; // Import TripsProvider
+import 'package:airbnbmc/provider/userprovider.dart';
 import 'package:airbnbmc/screens/guesthomescreen.dart';
-import 'package:airbnbmc/screens/startscreen.dart';
+import 'package:airbnbmc/screens/loginscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart'; // Import provider package
-import 'package:airbnbmc/provider/tripprovider.dart'; // Import TripsProvider
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home:  GuestHomeScreen(),
+        home: LoginScreen(),
       ),
     );
   }
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
 
 class AppInit extends StatefulWidget {
   const AppInit({super.key});
-
+  
   @override
   _AppInitState createState() => _AppInitState();
 }

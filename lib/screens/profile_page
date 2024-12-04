@@ -1,0 +1,162 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      final User? user = _auth.currentUser;
+
+      if (user != null) {
+        // Fetch user data from Firestore
+        DocumentSnapshot doc = await _firestore.collection('users').doc(user.uid).get();
+
+        if (doc.exists) {
+          setState(() {
+            userData = doc.data() as Map<String, dynamic>;
+          });
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch user data: $e')),
+      );
+    }
+  }
+
+  
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: userData == null
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Profile Picture
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.red.shade100,
+                    child: const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Name
+                  Text(
+                    userData!['firstName'].toString() + ' ' + userData!['lastName'].toString(),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  // Email
+                  Text(
+                    userData!['email'] ?? 'Unknown',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Profile Information Section
+                  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          ProfileInfoRow(
+                            icon: Icons.location_city,
+                            title: 'City',
+                            value: userData!['city'] ?? 'Unknown',
+                          ),
+                          const Divider(),
+                          ProfileInfoRow(
+                            icon: Icons.public,
+                            title: 'Country',
+                            value: userData!['country'] ?? 'Unknown',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+}
+
+// Helper Widget for Profile Information Row
+class ProfileInfoRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String value;
+
+  const ProfileInfoRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.red),
+        const SizedBox(width: 16),
+        Text(
+          '$title:',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+          ),
+        ),
+      ],
+    );
+  }
+}

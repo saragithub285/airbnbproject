@@ -17,13 +17,13 @@ class _PaymentGatewayState extends State<PaymentGateway> {
     super.initState();
   }
 
-  void startpayment() async {
-    print(_webViewController);
+  void startPayment() async {
     if (_webViewController != null) {
       _webViewController!.loadUrl(
         urlRequest: URLRequest(
           url: WebUri(
-              'https://accept.paymob.com/api/acceptance/iframes/884603?payment_token=${widget.paymentKey}'),
+            'https://accept.paymob.com/api/acceptance/iframes/884603?payment_token=${widget.paymentKey}',
+          ),
         ),
       );
     }
@@ -39,17 +39,19 @@ class _PaymentGatewayState extends State<PaymentGateway> {
         ),
         onWebViewCreated: (controller) {
           _webViewController = controller;
-          startpayment();
+          startPayment();
         },
         onLoadStop: (controller, url) {
-          if (url != null &&
-              url.queryParameters['success'] == 'true' &&
-              url.queryParameters.containsKey("success")) {
-            print("payment successful");
-          } else if (url != null &&
-              url.queryParameters['success'] == 'false' &&
-              url.queryParameters.containsKey("success")) {
-            print("payment failed");
+          if (url != null && url.queryParameters.containsKey('success')) {
+            // Check if payment was successful
+            if (url.queryParameters['success'] == 'true') {
+              print("Payment successful");
+              Navigator.pop(context, true); // Return 'true' to indicate success
+            } else {
+              print("Payment failed");
+              Navigator.pop(
+                  context, false); // Return 'false' to indicate failure
+            }
           }
         },
       ),

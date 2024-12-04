@@ -2,6 +2,7 @@ import 'package:airbnbmc/paymob/payment_gateway.dart';
 import 'package:airbnbmc/paymob/paymob_manager.dart';
 import 'package:airbnbmc/widgets/calender_ui.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class BookingListScreen extends StatefulWidget {
@@ -71,6 +72,57 @@ class _BookingListScreenState extends State<BookingListScreen> {
     return totalSelectedDays * widget.hotelPricePerDay;
   }
 
+  Future<void> _addBookingToFirestore() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception('User not authenticated');
+      }
+
+      // Fetch firstName and lastName from Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid) // Assuming the user's data is stored under their UID
+          .get();
+
+      if (!userDoc.exists) {
+        throw Exception('User data not found');
+      }
+
+      final firstName = userDoc['firstName'] ?? 'Unknown';
+      final lastName = userDoc['lastName'] ?? 'User';
+
+      // Prepare booking data
+      final bookingData = {
+        'bookedDates':
+            _selectedDates.map((date) => Timestamp.fromDate(date)).toList(),
+        'totalPrice': _calculateTotalPrice(),
+        'firstName': firstName,
+        'lastName': lastName,
+      };
+
+      // Save booking to Firestore
+      await FirebaseFirestore.instance.collection('bookings').add(bookingData);
+      print('Booking added to Firestore successfully!');
+    } catch (e) {
+      print('Error adding booking to Firestore: $e');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text('Failed to save booking.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   void _continueToPayment(double price) async {
     try {
       // Show a loading indicator
@@ -88,12 +140,26 @@ class _BookingListScreenState extends State<BookingListScreen> {
 
       // Navigate to the payment gateway
       Navigator.pop(context); // Close the loading dialog
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PaymentGateway(paymentKey: paymentKey),
-        ),
-      );
+      bool paymentSuccessful = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PaymentGateway(paymentKey: paymentKey),
+            ),
+          ) ??
+          false; // Handle null case if no value is returned
+
+      if (paymentSuccessful) {
+        // Payment successful, proceed to add booking
+        _addBookingToFirestore();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Payment successful! Booking added.')),
+        );
+      } else {
+        // Payment failed, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Payment failed. Please try again.')),
+        );
+      }
     } catch (e) {
       // Log the error and show an error dialog
       print('Error getting payment key: $e');

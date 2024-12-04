@@ -122,7 +122,7 @@ class _TripsScreenState extends State<TripsScreen> {
 
     // Here, you would typically integrate a payment gateway like Stripe or PayPal.
     // For now, let's just show a success message with the total price.
-
+    Provider.of<TripsProvider>(context, listen: false).clearTrips();
     //go to calender screen
     Navigator.push(
       context,

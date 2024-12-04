@@ -1,7 +1,7 @@
 import 'package:airbnbmc/screens/guesthomescreen.dart';
+import 'package:airbnbmc/screens/signupscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // For navigation to SignUpScreen
-import 'package:airbnbmc/screens/signupscreen.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/userprovider.dart'; // Import SignUpScreen

@@ -11,7 +11,7 @@ class PaymobManager {
 
     // The payload for the API request
     Map<String, dynamic> payload = {
-      "amount": price,
+      "amount": price * 100,
       "currency": "EGP",
       "payment_methods": [4889352],
       "items": [],
@@ -51,7 +51,6 @@ class PaymobManager {
         return responseData['payment_keys'][0]['key'];
       } else {
         print("Error: ${response.statusCode}, ${response.body}");
-        Map<String, dynamic> responseData = jsonDecode(response.body);
         return response.body;
       }
     } catch (e) {
